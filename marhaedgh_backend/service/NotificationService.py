@@ -26,6 +26,10 @@ class NotificationService:
                 summary="이제 알바생 한 명이 많은 시간 일해도 딱 시급만큼만 받습니다.",
                 keywords=["키워드1", "키워드2"],
                 date="2021-07-01",
-                isRead=False
+                isRead=True
             ),
         ]
+
+    def read_notification(self, notification_id: int):
+        # TODO: put db
+        pass
