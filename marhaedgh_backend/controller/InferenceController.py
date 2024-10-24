@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from service.InferenceService import InferenceService
+from dto.InferRequestDto import InferRequestDto
 
 import ModelLoader
 
@@ -13,8 +14,8 @@ router = APIRouter(
 )
 
 @router.post("/infer")
-async def inferenceRequest():
+async def inferenceRequest(inferRequestDto:InferRequestDto):
 
-    inferenceService.sendInferenceRequest_vLLM()
-    print("안녕 실행 잘 됐어@@@@@@@@@@@@@@@@@@@@@2")
-    return 0
+    inferResponseDto = await inferenceService.sendInferenceRequest_vLLM(inferRequestDto.role, inferRequestDto.content)
+
+    return inferResponseDto
