@@ -16,3 +16,11 @@ async def get_notifications(
 ):
     notifications = notificationService.get_notifications()
     return BaseResponse(message="success", data=notifications)
+
+
+@router.patch("/read", response_model=BaseResponse)
+async def read_notification(
+        notification_id: int
+):
+    notificationService.read_notification(notification_id)
+    return BaseResponse(message="success")
