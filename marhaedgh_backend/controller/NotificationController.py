@@ -10,7 +10,7 @@ router = APIRouter(
 notificationService = NotificationService()
 
 
-@router.post("/", response_model=BaseResponse)
+@router.get("/", response_model=BaseResponse)
 async def get_notifications(
         # TODO: user id required
 ):
@@ -24,3 +24,11 @@ async def read_notification(
 ):
     notificationService.read_notification(notification_id)
     return BaseResponse(message="success")
+
+
+@router.get("/{notification_id}", response_model=BaseResponse)
+async def get_notification(
+        notification_id: int,
+):
+    notification = notificationService.get_notification(notification_id)
+    return BaseResponse(message="success", data=notification)
