@@ -20,7 +20,7 @@ def main():
     block_size=max_seq_len,
     #compiled_model_dir="rbln-Meta-Llama-3-8B-Instruct",
     #compiled_model_dir="rbln-ko-Llama3-Luxia-8B",
-    compiled_model_dir="rbln-ko-Llama3-Bllossom-8B",
+    compiled_model_dir="marhaedgh_backend/rbln-ko-Llama3-Bllossom-8B",
   )
   engine = AsyncLLMEngine.from_engine_args(engine_args)
 
