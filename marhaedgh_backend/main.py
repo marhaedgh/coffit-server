@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-#from controller
+from controller import InferenceController
 
 SWAGGER_HEADERS = {
     "title": "말해다규현 api 서버 테스트",
@@ -34,7 +34,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#vllm 모델 생성 코드
-
-
+# Add router
 app.include_router(InferenceController.router)
