@@ -4,3 +4,7 @@ marhaedgh_backend/.idea/
 marhaedgh_backend/controller/__pycache__/
 
 marhaedgh_backend/service/__pycache__/
+
+*.pyc
+
+marhaedgh_backend/.venv/
