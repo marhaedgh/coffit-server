@@ -7,7 +7,7 @@ from model.Representative import Representative
 
 class BusinessData(BaseModel):
     business_type: Literal['개인사업자', '법인사업자']
-    corporation_type: List[Literal['개인법인 동일', '창업', '재창업', '기존 사업자']] = None
+    corporation_type: List[Literal['창업', '재창업', '기존 사업자']] = None
     industry: Literal[
         '자동차 및 부품 판매업', '도매 및 상품 중개업', '소매업(자동차 제외)',
         '숙박업', '음식점업', '제조업', '교육 서비스업', '협회 및 단체, 수리 및 기타 개인 서비스업',
