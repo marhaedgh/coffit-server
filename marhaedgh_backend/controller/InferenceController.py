@@ -4,10 +4,10 @@ from service.InferenceService import InferenceService
 from dto.InferRequestDto import InferRequestDto
 
 import ModelLoader
+ 
+inferenceService = InferenceService(ModelLoader.InferenceModel())
 
-#모델 불러오기
-modelLoader = ModelLoader.InferenceModel()
-inferenceService = InferenceService(modelLoader)
+print(ModelLoader.InferenceModel())
 
 router = APIRouter(
     prefix="/api/v1",

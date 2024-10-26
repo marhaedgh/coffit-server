@@ -3,6 +3,10 @@ from starlette.middleware.cors import CORSMiddleware
 
 from controller import InferenceController, UserController, NotificationController
 
+from service.AgentService import AgentService
+
+import ModelLoader
+
 SWAGGER_HEADERS = {
     "title": "말해다규현 api 서버 테스트",
     "version": "0.1.0",
@@ -38,3 +42,5 @@ app.add_middleware(
 app.include_router(InferenceController.router)
 app.include_router(UserController.router)
 app.include_router(NotificationController.router)
+
+agent_service = AgentService(ModelLoader.InferenceModel())
