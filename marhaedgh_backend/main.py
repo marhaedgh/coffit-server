@@ -42,5 +42,3 @@ app.add_middleware(
 app.include_router(InferenceController.router)
 app.include_router(UserController.router)
 app.include_router(NotificationController.router)
-
-agent_service = AgentService(ModelLoader.InferenceModel())
