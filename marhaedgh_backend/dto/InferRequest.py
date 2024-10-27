@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
-class InferRequestDto(BaseModel):
+class InferRequest(BaseModel):
     role: str | None = 'User'
     content: str

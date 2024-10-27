@@ -1,4 +1,4 @@
 from pydantic import BaseModel
 
-class InferResponseDto(BaseModel):
+class InferResponse(BaseModel):
     result: str
