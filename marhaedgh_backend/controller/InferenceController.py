@@ -23,8 +23,8 @@ async def inferenceRequest(inferRequest:InferRequest):
 
 #URL 넣으면 크롤링해서 alert 테이블 형태와 똑같이 반환
 @router.post("/demon-infer")
-async def inferenceRequest(demonInferRequest:DemonInferRequest):
+async def inferenceRequest(demon_infer_request:DemonInferRequest):
 
-    demonInferResponse = await agentService.demonAlertResponse(demonInferRequest.url)
+    demon_infer_response = await agentService.demon_alert_response(demon_infer_request.url)
 
-    return demonInferResponse
+    return demon_infer_response
