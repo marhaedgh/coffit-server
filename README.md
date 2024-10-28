@@ -35,3 +35,21 @@ sudo docker run --privileged --shm-size=1g --ulimit memlock=-1 \
 2. vllm_api_example.py 파일 참고해서 실행시키기.
 > compile_tutorial.py 는 기본 llama3 8B 모델
 > 그외에 bllossom, luxia 모델 추가
+
+
+## docker -> mysql
+>
+도커 이미지 빌드
+sudo docker image build -t malhaedgh_db_image .
+
+도커 실행
+sudo docker container run --name malhaedgh_db -d -p 3305:3306 --rm -v /home/guest/marhaedgh/docker/mysql_db:/var/lib/mysql malhaedgh_db_image
+
+도커 컨테이너 접속
+> docker exec -it malhaedgh_db_image bash
+
+도커 컨테이너 강종
+> sudo docker stop malhaedgh_db
+
+도커 컨테이너 삭제
+> sudo docker rm malhaedgh_db
