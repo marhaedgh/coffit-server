@@ -30,7 +30,7 @@ def extract_text_from_url(url: str, output_dir: str) -> str:
 
     # 지정한 폴더에 Markdown 파일로 저장
     os.makedirs(output_dir, exist_ok=True)  # 폴더가 없으면 생성
-    filename = url_to_filename(url)
+    filename = url_to_filename(url[7:35])
     file_path = os.path.join(output_dir, filename)
     
     with open(file_path, "w", encoding="utf-8") as file:
