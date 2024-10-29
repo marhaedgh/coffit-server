@@ -5,6 +5,10 @@ from dto.GetNotificationsResponse import GetNotificationsResponse
 
 class NotificationService:
     def get_notifications(self) -> List[GetNotificationsResponse]:
+        # TODO: 사용자 분류 정보 불러오기
+        # TODO: 해당 분류에 해당하는 Notifications 가져오기 (read_notification)
+        # TODO: GetNotificationsResponse에 넣어 정리
+
         return [
             # NOTE: dummy
             GetNotificationsResponse(

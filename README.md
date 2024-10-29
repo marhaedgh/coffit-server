@@ -46,7 +46,7 @@ sudo docker image build -t malhaedgh_db_image .
 sudo docker container run --name malhaedgh_db -d -p 3305:3306 --rm -v /home/guest/marhaedgh/docker/mysql_db:/var/lib/mysql malhaedgh_db_image
 
 도커 컨테이너 접속
-> docker exec -it malhaedgh_db_image bash
+> sudo docker exec -it malhaedgh_db bash
 
 도커 컨테이너 강종
 > sudo docker stop malhaedgh_db
