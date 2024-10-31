@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from db.models.alert import Alert
+from db.models.Alert import Alert
 
 class AlertRepository:
     def __init__(self, db: Session):
