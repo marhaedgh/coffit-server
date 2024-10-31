@@ -1,12 +1,12 @@
-from typing import List, Optional
+from typing import List, Dict, Optional, Any
 
 from pydantic import BaseModel
 
 
 class GetNotificationsResponse(BaseModel):
+    id: int
     title: str
     summary: str
-    keywords: List[str]
+    keywords: Optional[Dict[str, Any]]
     date: str
-    isRead: bool
     content: Optional[str] = None
