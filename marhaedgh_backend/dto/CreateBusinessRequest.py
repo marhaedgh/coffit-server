@@ -8,9 +8,9 @@ from enumeration.Industry import Industry
 
 
 class CreateBusinessRequest(BaseModel):
-    business_type: BusinessType
-    corporation_type: List[CorporationType]
-    industry: Industry
+    business_type: str
+    corporation_type: str
+    industry: str
     region: str
     representative_birthday: str  # YYYY-MM-DD
     representative_gender: str  # '남' 또는 '여'
