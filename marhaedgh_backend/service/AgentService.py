@@ -2,8 +2,14 @@ import json
 import asyncio
 from vllm import AsyncEngineArgs, AsyncLLMEngine, SamplingParams
 from langchain.text_splitter import CharacterTextSplitter
+from sqlalchemy.orm import Session
 
 from dto.DemonInferResponse import DemonInferResponse
+from db.database import get_db
+from repository.BusinessDataRepository import BusinessDataRepository
+from repository.AlertRepository import AlertRepository
+from repository.UserAlertMappingRepository import UserAlertMappingRepository
+from repository.UserRepository import UserRepository
 
 from util.CrawllerForPresentation import url_to_filename
 from util.CrawllerForPresentation import extract_text_from_url
@@ -27,6 +33,35 @@ class AgentService:
         summarization = await self.create_summarization(content)
         classification = await self.create_classification(content)
         whattodo = await self.create_whattodo(content)
+
+        # classification -> business_data로 변경하는 코드 작성 필요 / 프롬프트
+
+        db: Session = next(get_db())
+
+        # classification -> BusinessDataRepository로 저장
+        business_data_repository = BusinessDataRepository(db)
+        #business_data_id 생겼다고 가정
+        business_data_id = 0
+
+        # AlertRepository에 본문 내용 저장
+        alert_repository = AlertRepository(db)
+        gen_alert = alert_repository.create({
+            "business_data_id": business_data_id,
+            "title": title,
+            "keywords": json.loads(keyword),
+            "text_summarization": summarization,
+            "task_summarization": whattodo
+        })
+        # detail_report, duedate, line_summarization은 일단 제외
+
+        # user_alert_mapping_repository에 추가 ( 사용자 분류별로 검색, 해당하는 분류id 찾아서 추가)
+        user_alert_mapping_repository = UserAlertMappingRepository(db)
+        user_alert_mapping_repository.create({
+            "user_id": 0,
+            "alert_id": gen_alert.id
+        })
+
+        # 프롬프트 엔지니어링 할 땐 위 코드 주석처리하기
 
         demon_infer_response = DemonInferResponse(
             title = title, 
