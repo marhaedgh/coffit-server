@@ -20,12 +20,13 @@ async def get_notifications(
     return BaseResponse(message="success about calling get notifications", data=notifications)
 
 
-@router.patch("/read", response_model=BaseResponse)
-async def read_notification(
-        notification_id: int
+@router.get("/regi", response_model=BaseResponse)
+async def get_regi_notifications(
+        # TODO: user id required
+        get_notifications_request:GetNotificationsRequest
 ):
-    notificationService.read_notification(notification_id)
-    return BaseResponse(message="success")
+    notifications = notificationService.get_regi_after_notifications(get_notifications_request)
+    return BaseResponse(message="success about calling get notifications", data=notifications)
 
 
 @router.get("/{notification_id}", response_model=BaseResponse)
