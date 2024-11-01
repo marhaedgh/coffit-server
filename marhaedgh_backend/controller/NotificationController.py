@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from dto.BaseResponse import BaseResponse
+from dto.GetNotificationsRequest import GetNotificationsRequest
 from service.NotificationService import NotificationService
 
 router = APIRouter(
@@ -13,9 +14,10 @@ notificationService = NotificationService()
 @router.get("/", response_model=BaseResponse)
 async def get_notifications(
         # TODO: user id required
+        get_notifications_request:GetNotificationsRequest
 ):
-    notifications = notificationService.get_notifications()
-    return BaseResponse(message="success", data=notifications)
+    notifications = notificationService.get_notifications(get_notifications_request)
+    return BaseResponse(message="success about calling get notifications", data=notifications)
 
 
 @router.patch("/read", response_model=BaseResponse)
