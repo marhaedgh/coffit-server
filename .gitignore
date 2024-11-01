@@ -8,3 +8,13 @@ marhaedgh_backend/service/__pycache__/
 *.pyc
 
 marhaedgh_backend/.venv/
+
+# Untracked 파일 및 디렉터리 무시
+Meta-Llama-3-8B-Instruct/
+docker/
+dockerfile(triton)
+grpc_client_1.py
+marhaedgh_backend/rag_data/
+marhaedgh_backend/rbln-ko-Llama3-Bllossom-8B/
+rbln-ko-Llama3-Luxia-8B/
+vllm_backend/
