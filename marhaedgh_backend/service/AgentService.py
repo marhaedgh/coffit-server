@@ -30,7 +30,7 @@ class AgentService:
 
         title = await self.create_title(content)
         keyword = await self.create_keywords(content)
-        summarization = await self.create_summarization(content)
+        summarizations = await self.create_summarization(content)
         classification = await self.create_classification(content)
         whattodo = await self.create_whattodo(content)
 
@@ -40,7 +40,7 @@ class AgentService:
 
         # classification -> BusinessDataRepository로 저장
         business_data_repository = BusinessDataRepository(db)
-        #business_data_id 생겼다고 가정
+        #business_data_id 생겼다고 가정, classification에서 추출
         business_data_id = 0
 
         # AlertRepository에 본문 내용 저장
@@ -48,8 +48,9 @@ class AgentService:
         gen_alert = alert_repository.create({
             "business_data_id": business_data_id,
             "title": title,
-            "keywords": json.loads(keyword),
-            "text_summarization": summarization,
+            "keywords": json.dumps({"keywords": keyword}),
+            "line_summarization": summarizations[1],
+            "text_summarization": summarizations[0],
             "task_summarization": whattodo
         })
         # detail_report, duedate, line_summarization은 일단 제외
@@ -66,7 +67,8 @@ class AgentService:
         demon_infer_response = DemonInferResponse(
             title = title, 
             keywords = keyword,
-            summarization = summarization,
+            line_summarization = summarizations[1],
+            summarization = summarizations[0],
             classification = classification,
             what_to_do = whattodo
         )
@@ -167,7 +169,7 @@ class AgentService:
     #요약 생성
     async def create_summarization(self, content):
         # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/summarization.json", 'r', encoding='utf-8') as file:
+        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/summarization_korean.json", 'r', encoding='utf-8') as file:
             json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
 
         if len(json_data) >= 2 and 'content' in json_data[1]:
@@ -189,9 +191,24 @@ class AgentService:
         #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
         result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
 
-        summarization = result.outputs[0].text
+        summarizations = ["", ""]
+        summarizations[0] = result.outputs[0].text
 
-        return summarization
+        #한줄 요약 생성 -> 기존 요약에서 한줄로 바꾸는 프롬프트 추가
+        # JSON 파일 로드
+        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/line_summarization.json", 'r', encoding='utf-8') as file:
+            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
+
+        if len(json_data) >= 2 and 'content' in json_data[1]:
+            json_data[1]['content'] = summarizations[0] + json_data[1]['content']
+
+        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
+        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
+
+        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
+        summarizations[1] = result.outputs[0].text
+
+        return summarizations
 
 
     #할일 생성
