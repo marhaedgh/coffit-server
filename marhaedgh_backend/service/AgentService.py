@@ -19,31 +19,65 @@ class AgentService:
 
     def __init__(self, modelLoader):
         self.modelLoader = modelLoader
-        
 
-    async def demon_alert_response(self, url):
+
+    async def prepare_request(self, content, json_path):
+        with open(json_path, 'r', encoding='utf-8') as file:
+            json_data = json.load(file)
+
+        if len(json_data) >= 2 and 'content' in json_data[1]:
+            json_data[1]['content'] = content + json_data[1]['content']
+
+        return self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
+
+
+    async def demon_alert_response_efficient(self, url):
         #URL 타고 들어가서 본문내용(PDF) 추출 후 텍스트로 변환 //일단 html스크랩
 
         output_dir = "/home/guest/marhaedgh/marhaedgh_backend/rag_data"  # 저장할 디렉토리 경로
         # URL에서 텍스트 추출 및 저장
         content = extract_text_from_url(url, output_dir)
 
-        title = await self.create_title(content)
-        keyword = await self.create_keywords(content)
-        summarizations = await self.create_summarization(content)
-        classification = await self.create_classification(content)
-        whattodo = await self.create_whattodo(content)
+        # 배치로 요청을 처리합니다.
+        sampling_params = SamplingParams(
+            temperature=0.0,
+            skip_special_tokens=True,
+            stop_token_ids=self.modelLoader.stop_tokens(),
+        )
 
-        # classification -> business_data로 변경하는 코드 작성 필요 / 프롬프트
+        # 각 추론 요청에 필요한 JSON 파일을 로드하고 메시지를 생성합니다.
+        layer0_tasks = [
+            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/title.json"),                   #제목
+            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/keywords.json"),                #키워드
+            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/summarization_korean.json"),    #요약
+            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/classification.json"),          #분류
+            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/whattodo.json"),                #할일
+        ]
 
+        layer0_results = await self.modelLoader.run_multi(layer0_tasks, sampling_params)
+
+        layer1_tasks = [
+            await self.prepare_request(
+                layer0_results[2].outputs[0].text,
+                "/home/guest/marhaedgh/marhaedgh_backend/prompt/line_summarization.json"                               #요약 -> 한줄요약
+            )
+        ]
+
+        layer1_results = await self.modelLoader.run_multi(layer1_tasks, sampling_params)
+
+        # 여기서 레이어링 / 멀티 단위로 해서 더 빠르게 처리
+
+        title = layer0_results[0].outputs[0].text
+        keyword = layer0_results[1].outputs[0].text
+        summarizations = [layer0_results[2].outputs[0].text, layer1_results[0].outputs[0].text]
+        classification = layer0_results[3].outputs[0].text
+        whattodo = layer0_results[4].outputs[0].text
+
+        # 데이터베이스에 저장
         db: Session = next(get_db())
-
-        # classification -> BusinessDataRepository로 저장
         business_data_repository = BusinessDataRepository(db)
-        #business_data_id 생겼다고 가정, classification에서 추출
-        business_data_id = 0
+        business_data_id = 0  # 예시값
 
-        # AlertRepository에 본문 내용 저장
         alert_repository = AlertRepository(db)
         gen_alert = alert_repository.create({
             "business_data_id": business_data_id,
@@ -53,191 +87,23 @@ class AgentService:
             "text_summarization": summarizations[0],
             "task_summarization": whattodo
         })
-        # detail_report, duedate, line_summarization은 일단 제외
 
-        # user_alert_mapping_repository에 추가 ( 사용자 분류별로 검색, 해당하는 분류id 찾아서 추가)
         user_alert_mapping_repository = UserAlertMappingRepository(db)
         user_alert_mapping_repository.create({
             "user_id": 0,
             "alert_id": gen_alert.id
         })
 
-        # 프롬프트 엔지니어링 할 땐 위 코드 주석처리하기
-
         demon_infer_response = DemonInferResponse(
-            title = title, 
-            keywords = keyword,
-            line_summarization = summarizations[1],
-            summarization = summarizations[0],
-            classification = classification,
-            what_to_do = whattodo
+            title=title, 
+            keywords=keyword,
+            line_summarization=summarizations[1],
+            summarization=summarizations[0],
+            classification=classification,
+            what_to_do=whattodo
         )
 
         return demon_infer_response
-
-
-    #제목생성
-    async def create_title(self, content):
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/title.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = content + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        #여기서 프롬프트 레이어도 쌓을 수 있음
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            skip_special_tokens=True,
-            stop_token_ids=self.modelLoader.stop_tokens(),
-        )
-
-        request_id = '0'
-
-        #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-
-        title = result.outputs[0].text
-
-        return title
-
-    
-    #키워드 생성
-    async def create_keywords(self, content):
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/keywords.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = content + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        #여기서 프롬프트 레이어도 쌓을 수 있음
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            skip_special_tokens=True,
-            stop_token_ids=self.modelLoader.stop_tokens(),
-        )
-
-        request_id = '1'
-
-        #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-
-        keywords = result.outputs[0].text
-
-        return keywords
-
-
-    #분류 생성
-    async def create_classification(self, content):
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/classification.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = content + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        #여기서 프롬프트 레이어도 쌓을 수 있음
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            skip_special_tokens=True,
-            stop_token_ids=self.modelLoader.stop_tokens(),
-        )
-
-        request_id = '2'
-
-        #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-
-        classification = result.outputs[0].text
-
-        return classification
-
-
-    #요약 생성
-    async def create_summarization(self, content):
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/summarization_korean.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = content + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        #여기서 프롬프트 레이어도 쌓을 수 있음
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            skip_special_tokens=True,
-            stop_token_ids=self.modelLoader.stop_tokens(),
-        )
-
-        request_id = '3'
-
-        #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-
-        summarizations = ["", ""]
-        summarizations[0] = result.outputs[0].text
-
-        #한줄 요약 생성 -> 기존 요약에서 한줄로 바꾸는 프롬프트 추가
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/line_summarization.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = summarizations[0] + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-        summarizations[1] = result.outputs[0].text
-
-        return summarizations
-
-
-    #할일 생성
-    async def create_whattodo(self, content):
-        # JSON 파일 로드
-        with open("/home/guest/marhaedgh/marhaedgh_backend/prompt/whattodo.json", 'r', encoding='utf-8') as file:
-            json_data = json.load(file)  # JSON 파일을 파이썬 객체로 로드
-
-        if len(json_data) >= 2 and 'content' in json_data[1]:
-            json_data[1]['content'] = content + json_data[1]['content']
-
-        # 여러 역할별로 `apply_chat_template`을 사용하여 메시지를 인코딩합니다.
-        encoded_message = self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
-
-        #여기서 프롬프트 레이어도 쌓을 수 있음
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            skip_special_tokens=True,
-            stop_token_ids=self.modelLoader.stop_tokens(),
-        )
-
-        request_id = '4'
-
-        #chat = self.modelLoader.tokenizer.apply_chat_template(chat, add_generation_prompt=True, tokenize=False)
-        result = await self.modelLoader.run_single(encoded_message, request_id, sampling_params) #userid로 requestid 식별해도 괜찮겠다
-
-        whattodo = result.outputs[0].text
-
-        return whattodo
+        
 
     #세부내용 리포트(마크다운)생성 에이전트
