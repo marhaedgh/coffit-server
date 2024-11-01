@@ -25,6 +25,6 @@ async def inferenceRequest(inferRequest:InferRequest):
 @router.post("/demon-infer")
 async def inferenceRequest(demon_infer_request:DemonInferRequest):
 
-    demon_infer_response = await agentService.demon_alert_response(demon_infer_request.url)
+    demon_infer_response = await agentService.demon_alert_response_efficient(demon_infer_request.url)
 
     return demon_infer_response
