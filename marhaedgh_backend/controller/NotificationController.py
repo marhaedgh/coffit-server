@@ -16,8 +16,8 @@ async def get_notifications(
         # TODO: user id required
         get_notifications_request:GetNotificationsRequest
 ):
-    notifications = notificationService.get_notifications(get_notifications_request)
-    return BaseResponse(message="success about calling get notifications", data=notifications)
+    get_notifications_response = notificationService.get_notifications(get_notifications_request)
+    return BaseResponse(message="success about calling get notifications", data=get_notifications_response)
 
 
 @router.get("/regi", response_model=BaseResponse)
@@ -25,13 +25,13 @@ async def get_regi_notifications(
         # TODO: user id required
         get_notifications_request:GetNotificationsRequest
 ):
-    notifications = notificationService.get_regi_after_notifications(get_notifications_request)
-    return BaseResponse(message="success about calling get notifications", data=notifications)
+    get_notifications_response = notificationService.get_regi_after_notifications(get_notifications_request)
+    return BaseResponse(message="success about calling get notifications(register)", data=get_notifications_response)
 
 
 @router.get("/{notification_id}", response_model=BaseResponse)
 async def get_notification(
         notification_id: int,
 ):
-    notification = notificationService.get_notification(notification_id)
-    return BaseResponse(message="success", data=notification)
+    get_notification_response = notificationService.get_notification(notification_id)
+    return BaseResponse(message="success", data=get_notification_response)
