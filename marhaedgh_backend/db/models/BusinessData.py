@@ -2,15 +2,17 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, JSON, Text, D
 
 from db.database import Base
 
+# BusinessData 테이블
 class BusinessData(Base):
     __tablename__ = "business_data"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    business_type = Column(String, nullable=True)
-    corporation_type = Column(String, nullable=True)
-    industry = Column(String, nullable=True)
-    region = Column(String, nullable=True)
-    representative_birthday = Column(String, nullable=True)  # 날짜 형식으로 저장하려면 Date로 변경 가능
-    representative_gender = Column(String, nullable=True)
-    revenue = Column(Integer, nullable=True)
+    business_type = Column(String(255), nullable=True)
+    corporation_type = Column(String(255), nullable=True)
+    industry = Column(String(255), nullable=True)
+    region_city = Column(String(50), nullable=True)
+    region_district = Column(String(50), nullable=True)
+    representative_birthday = Column(String(10), nullable=True)
+    representative_gender = Column(String(10), nullable=True)
+    revenue = Column(Float, nullable=True)
     employees = Column(Integer, nullable=True)
