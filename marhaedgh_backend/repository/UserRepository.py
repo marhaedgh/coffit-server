@@ -6,6 +6,8 @@ class UserRepository:
         self.db = db
 
     def create(self, user_data: dict) -> User:
+        # user_data에서 created_at 키가 있는 경우 제거 (자동 설정)
+        user_data.pop("created_at", None)
         user = User(**user_data)
         self.db.add(user)
         self.db.commit()

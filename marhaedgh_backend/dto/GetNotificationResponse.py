@@ -10,4 +10,4 @@ class GetNotificationResponse(BaseModel):
     keywords: list[str]
     whattodo: str
     date: str
-    content: Optional[str] = None
+    content: str = None
