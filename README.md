@@ -1,5 +1,14 @@
 # Coffit 서버
 ## How to run
+- 할당받은 rebellions 자원 ssh로 접속
+`$ cd malhaedgh`
+`$ cd malhaedgh_backend`
+`$ uvicorn main:app --host 0.0.0.0 --port 8000 --reload`
+
+POSTMAN으로 결과 확인 가능
+
+
+## Wikis
 - [파일 설명](https://github.com/marhaedgh/rbln-infer-server/wiki/%ED%8C%8C%EC%9D%BC-%EC%84%A4%EB%AA%85)
 - [Triton Inference Server 실행하는 법](https://github.com/marhaedgh/rbln-infer-server/wiki/Triton-Inference-Server-%EC%8B%A4%ED%96%89%ED%95%98%EB%8A%94-%EB%B2%95)
 - [Basic vLLM backend Test](https://github.com/marhaedgh/rbln-infer-server/wiki/Basic-vLLM-backend-Test)
