@@ -13,14 +13,17 @@ class NotificationRepository:
         return self.db.query(Alert).filter(Alert.id == alert_id).first()
     
     def get_notifications_by_user_id(self, user_id: int):
-        alerts_id = self.db.query(UserAlertMapping.alert_id).filter(UserAlertMapping.user_id == user_id).all()
+        # alerts_id를 Row 객체에서 실제 ID 값만 리스트로 추출
+        alerts_id = [alert.alert_id for alert in self.db.query(UserAlertMapping.alert_id).filter(UserAlertMapping.user_id == user_id).all()]
+        
         if not alerts_id:
             return []
 
         # 해당 alert_id를 가진 alerts 항목 조회
-        alerts = self.db.query(Alert).filter(Alert.id.in_(alert_id)).all()
+        alerts = self.db.query(Alert).filter(Alert.id.in_(alerts_id)).all()
 
         return alerts
+
     
 
     def get_involved_notifications_by_business_data_id(self, business_data_id: int): 
