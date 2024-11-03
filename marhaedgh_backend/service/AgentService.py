@@ -34,7 +34,7 @@ class AgentService:
     async def demon_alert_response_efficient(self, url):
         #URL 타고 들어가서 본문내용(PDF) 추출 후 텍스트로 변환 //일단 html스크랩
 
-        output_dir = "/home/guest/marhaedgh/marhaedgh_backend/rag_data"  # 저장할 디렉토리 경로
+        output_dir = "./rag_data"  # 저장할 디렉토리 경로
         # URL에서 텍스트 추출 및 저장
         content = extract_text_from_url(url, output_dir)
 
@@ -47,11 +47,11 @@ class AgentService:
 
         # 각 추론 요청에 필요한 JSON 파일을 로드하고 메시지를 생성합니다.
         layer0_tasks = [
-            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/title.json"),                   #제목
-            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/keywords.json"),                #키워드
-            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/summarization_korean.json"),    #요약
-            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/classification.json"),          #분류
-            await self.prepare_request(content, "/home/guest/marhaedgh/marhaedgh_backend/prompt/whattodo.json"),                #할일
+            await self.prepare_request(content, "./prompt/title.json"),                   #제목
+            await self.prepare_request(content, "./prompt/keywords.json"),                #키워드
+            await self.prepare_request(content, "./prompt/summarization_korean.json"),    #요약
+            await self.prepare_request(content, "./prompt/classification.json"),          #분류
+            await self.prepare_request(content, "./prompt/whattodo.json"),                #할일
         ]
 
         layer0_results = await self.modelLoader.run_multi(layer0_tasks, sampling_params)
@@ -59,7 +59,7 @@ class AgentService:
         layer1_tasks = [
             await self.prepare_request(
                 layer0_results[2].outputs[0].text,
-                "/home/guest/marhaedgh/marhaedgh_backend/prompt/line_summarization.json"                               #요약 -> 한줄요약
+                "./prompt/line_summarization.json"                               #요약 -> 한줄요약
             )
         ]
 
