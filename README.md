@@ -65,7 +65,8 @@ sudo docker container run --name malhaedgh_db -d -p 3305:3306 --rm -v /home/gues
 
 # 설계 문서
 ## ERD
-![image](![malhaedgh_db_ver1](https://github.com/user-attachments/assets/e2b2106d-ff8e-4ce9-b1b5-c23ad5e30f3d))
+<image width=500 src="https://github.com/user-attachments/assets/c9f1d00b-bef8-4cad-9a3e-521f7f464ad6">
+
 
 <br/>
 
