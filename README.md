@@ -10,10 +10,12 @@
 
 ## 설계 문서
 ### ERD
-<image width=500 src="https://github.com/user-attachments/assets/c9f1d00b-bef8-4cad-9a3e-521f7f464ad6">
-
+<image width=500 src="https://github.com/user-attachments/assets/ac46ee20-d122-4942-b3c8-5cc3d70717c5">
 
 <br/>
+<br/>
+<br/>
+### 
 
 ### 모델 성능 개발 전략
 - 
