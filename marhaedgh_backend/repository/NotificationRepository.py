@@ -8,6 +8,32 @@ from db.models.UserAlertMapping import UserAlertMapping
 class NotificationRepository:
     def __init__(self, db: Session):
         self.db = db
+
+    def change_read_true(self, user_id: int, alert_id: int):
+        # 해당 user_id와 alert_id에 맞는 UserAlertMapping 레코드 조회
+        result = self.db.query(UserAlertMapping).filter(
+            UserAlertMapping.user_id == user_id,
+            UserAlertMapping.alert_id == alert_id
+        ).first()
+
+        # 해당 항목이 존재하면 is_read 값을 True로 변경
+        if result:
+            result.is_read = True
+            self.db.commit()  # 변경 사항을 데이터베이스에 커밋
+            return True
+        else:
+            #존재하지 않음. fail
+            return False
+
+
+    def get_is_read_by_ids(self, user_id: int, alert_id: int):
+        result = self.db.query(UserAlertMapping.is_read).filter(
+            UserAlertMapping.user_id == user_id,
+            UserAlertMapping.alert_id == alert_id
+        ).scalar()  # scalar()로 단일 값 반환
+
+        return result
+
     
     def get_notification_by_alert_id(self, alert_id: int):
         return self.db.query(Alert).filter(Alert.id == alert_id).first()
