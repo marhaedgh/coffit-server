@@ -7,7 +7,7 @@ class GetNotificationResponse(BaseModel):
     id: int
     title: str
     summary: str
-    keywords: Optional[Dict[str, Any]]
+    keywords: list[str]
     whattodo: str
     date: str
     content: Optional[str] = None

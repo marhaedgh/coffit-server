@@ -7,5 +7,6 @@ class GetNotificationsResponse(BaseModel):
     id: int
     title: str
     line_summary: str
-    keywords: Optional[Dict[str, Any]]
+    keywords: list[str]
     date: str
+    is_read: bool
