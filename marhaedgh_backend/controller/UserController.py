@@ -13,7 +13,7 @@ router = APIRouter(
 userService = UserService()
 
 
-@router.post("/", response_model=CreateBusinessResponse)
+@router.post("/", response_model=BaseResponse)
 async def create_business(req: CreateBusinessRequest):
-    res = userService.create_business(req)
-    return res
+    create_business_response = userService.create_business(req)
+    return BaseResponse(message="success - create_business", data=create_business_response)
