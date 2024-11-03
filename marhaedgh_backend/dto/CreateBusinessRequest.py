@@ -11,7 +11,8 @@ class CreateBusinessRequest(BaseModel):
     business_type: str
     corporation_type: str
     industry: str
-    region: str
+    region_city: str
+    region_district: str
     representative_birthday: str  # YYYY-MM-DD
     representative_gender: str  # '남' 또는 '여'
     revenue: float
