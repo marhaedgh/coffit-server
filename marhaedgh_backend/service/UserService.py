@@ -21,7 +21,8 @@ class UserService:
             "business_type": req.business_type,
             "corporation_type": req.corporation_type,
             "industry": req.industry,
-            "region": req.region,
+            "region_city": req.region_city,
+            "region_district": req.region_district,
             "representative_birthday": req.representative_birthday,
             "representative_gender": req.representative_gender,
             "revenue": req.revenue,
@@ -33,18 +34,14 @@ class UserService:
         user_repository = UserRepository(db)
 
         user_data = {
-            "username": "None",
             "business_data_id": gen_business_data.id
         }
 
         gen_user_data = user_repository.create(user_data)
         # 최초로 들어온 사용자는 정책이 생길 때까지 아무것도 없음 -> 넣은 시점에서 기간이 살아있는 알림들은 받아볼 수 있게 넣어주는 것도 방법일 듯
-        #db: Session = Depends(get_db)
         
         create_business_response = CreateBusinessResponse(
-            id = gen_user_data.id,
-            username = gen_user_data.username,
+            user_id = gen_user_data.id,
             business_data_id = gen_user_data.business_data_id,
-            created_at = gen_user_data.created_at,
         )
         return create_business_response
