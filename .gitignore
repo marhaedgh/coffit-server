@@ -18,6 +18,7 @@ marhaedgh_backend/rag_data/
 marhaedgh_backend/rbln-ko-Llama3-Bllossom-8B/
 rbln-ko-Llama3-Luxia-8B/
 vllm_backend/
+marhaedgh_backend/bge-m3
 marhaedgh_backend/bge-m3/config.json
 marhaedgh_backend/bge-m3/compiled_model.rbln
 marhaedgh_backend/bge-m3/rbln_config.json
