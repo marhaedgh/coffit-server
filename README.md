@@ -1,8 +1,7 @@
 # Coffit 서버
 ## How to run
 - 할당받은 rebellions 자원 ssh로 접속
-- `$ cd malhaedgh`
-- `$ cd malhaedgh_backend`
+- `$ cd malhaedgh/malhaedgh_backend`
 - `$ uvicorn main:app --host 0.0.0.0 --port 8000 --reload`
 
 - POSTMAN으로 결과 확인 가능
