@@ -9,7 +9,7 @@ from repository.NotificationRepository import NotificationRepository
 VLLM_API_URL = "http://localhost:8000/api/v1/chat-infer"
 
 with st.chat_message("user"):
-    st.write("Hello 👋")
+    st.write("안녕하세요! Coffit AI 에요, 무엇이든 물어보세요! 👋")
 
 # 세션 초기화
 if "messages" not in st.session_state:
@@ -24,7 +24,10 @@ if st.query_params.get("alert_id"):
     notification = notification_repository.get_notification_by_alert_id(st.query_params["alert_id"])
     main_context = {
         "role": "assistant",
-        "content": notification.text_summarization
+        "content": "너는 정책과 지원사업에 대해서 잘 설명해주는 정책 설명가야. 지금부터 뱉는 말은 마크다운 형식으로 잘 뱉어줘.\
+         마크다운 형식은 문장과 문단을 구분하기위해 <br/>을 사용해. 문단간에 br 태그를 통해 설명 간에 공간을 줘서 읽기 쉽게 만들어줘. \
+         마크다운 양식으로 답변해줘. 다음은 사용자가 읽고 온 정책,\
+          지원사업 등의 요약 내용이야.\n\n\n" + notification.text_summarization
     }
     
     # 최초 접속 시에만 요약본을 세션에 추가 (사용자에게는 보이지 않음)
