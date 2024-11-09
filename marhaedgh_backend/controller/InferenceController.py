@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import StreamingResponse
 
 from service.InferenceService import InferenceService
 from service.AgentService import AgentService
@@ -30,3 +31,12 @@ async def inferenceRequest(demon_infer_request:DemonInferRequest):
     demon_infer_response = await agentService.demon_alert_response_efficient(demon_infer_request.url)
 
     return BaseResponse(message="success - demon_inferenceRequest", data=demon_infer_response)
+
+
+@router.post("/chat-infer")
+async def inference_chatting_request(infer_request: Request):
+    data = await infer_request.json()
+    messages = data["messages"]
+    
+    # 스트리밍 방식으로 응답 전송
+    return StreamingResponse(inferenceService.inference_chatting_streaming(messages), media_type="text/plain")
