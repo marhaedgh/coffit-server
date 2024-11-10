@@ -1,0 +1,15 @@
+llama-index
+llama-index-vector-stores-faiss
+# llama-index-readers-faiss
+llama-index-embeddings-huggingface
+# vllm==0.4.2
+llama-index-llms-vllm
+llama-index-llms-openai-like
+tqdm
+llama-index-callbacks-langfuse
+absl-py
+bottle
+langfuse
+wheel
+feedparser
+faiss-cpu
