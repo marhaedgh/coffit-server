@@ -5,7 +5,6 @@ from controller import InferenceController, UserController, NotificationControll
 
 from service.AgentService import AgentService
 
-import ModelLoader
 
 SWAGGER_HEADERS = {
     "title": "말해다규현 api 서버 테스트",

@@ -1,8 +1,15 @@
 import asyncio
 from transformers import AutoTokenizer
-from vllm import AsyncEngineArgs, AsyncLLMEngine, SamplingParams
 
-#vllm 모델 생성 코드
+from llama_index.vector_stores.faiss import FaissVectorStore
+from llama_index.core import StorageContext, load_index_from_storage
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.postprocessor import SimilarityPostprocessor
+from llama_index.core import get_response_synthesizer
+
+from util.RBLNBGEM3Embeddings import RBLNBGEM3Embeddings
+
 
 class InferenceModel:
 
@@ -16,45 +23,30 @@ class InferenceModel:
         cls = type(self)
         if not hasattr(cls, "_init"):             # 클래스 객체에 _init 속성이 없다면
 
-            # Please make sure the engine configurations match the parameters used when compiling.
-            self.model_id = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
-            self.max_seq_len = 4096
-            self.batch_size = 4
+            #토크나이저 초기화
+            self.tokenizer = AutoTokenizer.from_pretrained("MLP-KTLim/llama-3-Korean-Bllossom-8B")
 
-            self.engine_args = AsyncEngineArgs(
-                model=self.model_id,
-                device="rbln",
-                max_num_seqs=self.batch_size,
-                max_num_batched_tokens=self.max_seq_len,
-                max_model_len=self.max_seq_len,
-                block_size=self.max_seq_len,
-                compiled_model_dir="rbln-ko-Llama3-Bllossom-8B",
+            # 벡터 스토어 및 인덱스 초기화
+            self.vector_store = FaissVectorStore.from_persist_dir("./rag_data")
+            self.storage_context = StorageContext.from_defaults(
+                vector_store=self.vector_store,
+                persist_dir="./rag_data"
             )
-            self.engine = AsyncLLMEngine.from_engine_args(self.engine_args)
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+            self.index = load_index_from_storage(self.storage_context)
 
-            cls._init = True
+            # Retriever 및 Query Engine 설정
+            self.retriever = VectorIndexRetriever(index=self.index, similarity_top_k=2)
+            self.response_synthesizer = get_response_synthesizer(streaming=True, use_async=True)
+            self.query_engine = RetrieverQueryEngine(
+                retriever=self.retriever,
+                response_synthesizer=self.response_synthesizer,
+                node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.7)]
+            )
 
-
-    def stop_tokens(self):
-        eot_id = next((k for k, t in self.tokenizer.added_tokens_decoder.items() if t.content == "<|eot_id|>"), None)
-        if eot_id is not None:
-            return [self.tokenizer.eos_token_id, eot_id]
-        else:
-            return [self.tokenizer.eos_token_id]
-
-
-    # Runs a single inference for an example
-    async def run_single(self, chat, request_id, sampling_params):
-        results_generator = self.engine.generate(chat, sampling_params, request_id=request_id)
-        final_result = None
-        async for result in results_generator:
-            # You can use the intermediate `result` here, if needed.
-            final_result = result
-        return final_result
+            cls._initialized = True
 
 
-    async def run_multi(self, chats, sampling_params):
-        tasks = [asyncio.create_task(self.run_single(chat, i, sampling_params)) for (i, chat) in enumerate(chats)]
-        return [await task for task in tasks]
-
+    async def generate_response(self, chat_input):
+        sampling_params = SamplingParams(temperature=0.0, max_tokens=1024)
+        async for result in self.query_engine.synthesize(chat_input):
+            yield result
