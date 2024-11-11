@@ -6,7 +6,7 @@ import json
 from db.database import get_db
 from repository.NotificationRepository import NotificationRepository
 
-VLLM_API_URL = "http://localhost:8000/api/v1/chat-infer"
+VLLM_API_URL = "http://localhost:9000/api/v1/chat-infer"
 
 with st.chat_message("user"):
     st.write("안녕하세요! Coffit AI 에요, 무엇이든 물어보세요! 👋")
@@ -64,12 +64,14 @@ if prompt := st.chat_input("궁금한 점을 질문해 주세요!"):
         )
         
         # 서버에서 받은 스트리밍 응답 출력
+
         full_response = ""
         for chunk in response.iter_lines():
             if chunk:
                 decoded_chunk = chunk.decode("utf-8")
                 full_response += decoded_chunk
                 placeholder.markdown(full_response)
+
         
         # assistant의 응답을 세션에 추가
         st.session_state.messages.append({"role": "assistant", "content": full_response})

@@ -8,6 +8,22 @@ from dto.InferRequest import InferRequest
 from dto.DemonInferRequest import DemonInferRequest
 
 import ModelLoader
+
+
+from llama_index.core import Settings
+from util.RBLNBGEM3Embeddings import RBLNBGEM3Embeddings
+from llama_index.llms.openai_like import OpenAILike
+
+
+Settings.embed_model = RBLNBGEM3Embeddings()
+Settings.llm = OpenAILike(
+    model="rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096",
+    api_base="http://0.0.0.0:8000/v1",
+    api_key="1234",
+    max_tokens=1024,
+    is_chat_model=True
+)
+
  
 inferenceService = InferenceService(ModelLoader.InferenceModel())
 agentService = AgentService(ModelLoader.InferenceModel())
@@ -39,4 +55,4 @@ async def inference_chatting_request(infer_request: Request):
     messages = data["messages"]
     
     # 스트리밍 방식으로 응답 전송
-    return StreamingResponse(inferenceService.inference_chatting_streaming(messages), media_type="text/plain")
+    return StreamingResponse(await inferenceService.inference_chatting_streaming(messages), media_type="text/plain")
