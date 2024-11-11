@@ -1,8 +1,19 @@
 # Coffit 서버
 ## How to run
-- 할당받은 rebellions 자원 ssh로 접속
--  `$ cd malhaedgh/malhaedgh_backend`
--  
+- 할당받은 rebellions 자원 ssh로 접속  
+
+-  `$ cd malhaedgh/malhaedgh_backend`    
+  
+- Vector store 파일 추가될 때마다 아래 명령어 수행
+- ```bash 
+    $ python3 create_vector_store.py \
+    --vector_store_dir ./rag_data \
+    --compiled_embedding_model bge-m3 \      
+    --load_from_storage False \    
+    --chunk_size 1024 \   
+    --chunk_overlap_size 100
+     ``` 
+-  추론서버 실행
 - ```bash 
     $ python3 -m vllm.entrypoints.openai.api_server \
         --model rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096 \
@@ -15,8 +26,6 @@
         --block-size 4096 \
         --api-key 1234 
     ``` 
-    추론서버(vLLM) 실행
- 
 - `$ streamlit run ChatServer.py` streamlit 채팅 서버 실행
 - `$ uvicorn main:app --host 0.0.0.0 --port 9000 --reload` fastapi 서비스 서버 실행
 
