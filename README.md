@@ -43,7 +43,8 @@
 
 ## 설계 문서
 ### Current Server Architecture
-<img width="670" alt="image" src="https://github.com/user-attachments/assets/89cb3ddb-0064-4255-b040-f326847a1d26">
+<img width="670" alt="image" src="https://github.com/user-attachments/assets/4a4eb525-e87c-476c-b04e-ccaa1be58b63">
+
 
 ### ERD
 <image width=500 src="https://github.com/user-attachments/assets/ac46ee20-d122-4942-b3c8-5cc3d70717c5">
@@ -51,7 +52,6 @@
 <br/>
 <br/>
 <br/>
-### 
 
 ### 모델 성능 개발 전략
 - 
