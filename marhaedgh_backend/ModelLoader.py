@@ -44,9 +44,3 @@ class InferenceModel:
             )
 
             cls._initialized = True
-
-
-    async def generate_response(self, chat_input):
-        sampling_params = SamplingParams(temperature=0.0, max_tokens=1024)
-        async for result in self.query_engine.synthesize(chat_input):
-            yield result
