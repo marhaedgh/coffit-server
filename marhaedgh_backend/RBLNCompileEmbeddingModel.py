@@ -3,7 +3,7 @@ import os
 from optimum.rbln import RBLNXLMRobertaModel
 
 def main():
-    model_id = "BAAI/bge-m3"
+    model_id = "dragonkue/BGE-m3-ko"
 
     # Compile and export
     model = RBLNXLMRobertaModel.from_pretrained(
