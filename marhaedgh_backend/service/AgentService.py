@@ -40,15 +40,39 @@ class AgentService:
 
         content = extract_text_from_url(url, output_dir)
 
+        # 1. 준비 요청을 비동기로 병렬 수행하고 결과를 가져옴
+        layer0_title_request, layer0_keywords_request, layer0_summarization_request, \
+        layer0_classification_request, layer0_whattodo_request = await asyncio.gather(
+            self.prepare_request(content, "./prompt/title.json"),
+            self.prepare_request(content, "./prompt/keywords.json"),
+            self.prepare_request(content, "./prompt/summarization_korean.json"),
+            self.prepare_request(content, "./prompt/classification.json"),
+            self.prepare_request(content, "./prompt/whattodo.json")
+        )
 
-        layer0_title = Settings.llm.complete(await self.prepare_request(content, "./prompt/title.json"))
-        layer0_keywords = Settings.llm.complete(await self.prepare_request(content, "./prompt/keywords.json"))
-        layer0_summarization = Settings.llm.complete(await self.prepare_request(content, "./prompt/summarization_korean.json"))
-        layer0_classification = Settings.llm.complete(await self.prepare_request(content, "./prompt/classification.json"))
-        layer0_whattodo = Settings.llm.complete(await self.prepare_request(content, "./prompt/whattodo.json"))
+        # 2. acompletion 요청을 병렬로 수행하고 결과를 가져옴
+        layer0_title, layer0_keywords, layer0_summarization, \
+        layer0_classification, layer0_whattodo = await asyncio.gather(
+            Settings.llm.acomplete(layer0_title_request),
+            Settings.llm.acomplete(layer0_keywords_request),
+            Settings.llm.acomplete(layer0_summarization_request),
+            Settings.llm.acomplete(layer0_classification_request),
+            Settings.llm.acomplete(layer0_whattodo_request)
+        )
 
+        layer1_line_summarization_request = await self.prepare_request(content, "./prompt/line_summarization.json")
+        layer1_line_summarization = await Settings.llm.acomplete(layer1_line_summarization_request)
 
-        layer1_line_summarization = Settings.llm.complete(await self.prepare_request(content, "./prompt/line_summarization.json"))
+        """
+        #layer 추가시 아래와 같은 형식으로 추가하기. 하나일 경우 그냥 await
+        layer1_line_summarization_request = await asyncio.gather(
+            self.prepare_request(content, "./prompt/line_summarization.json"),
+        )
+
+        layer1_line_summarization = await asyncio.gather( 
+            Settings.llm.acomplete(layer1_line_summarization_request),
+        )
+        """
 
 
         title = str(layer0_title)
