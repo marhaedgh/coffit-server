@@ -12,7 +12,7 @@ class RBLNBGEM3Embeddings(BaseEmbedding):
 
     def __init__(
         self,
-        rbln_compiled_model_name: str = "bge-m3",
+        rbln_compiled_model_name: str = "BGE-m3-ko",
         **kwargs: Any,
         ) -> None:
         super().__init__(**kwargs)
