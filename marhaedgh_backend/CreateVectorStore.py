@@ -17,7 +17,7 @@ FLAGS = flags.FLAGS
 os.environ["LLAMA_INDEX_CACHE_DIR"]="./tmp" # Designate LlamaIndex Cache directory
 
 flags.DEFINE_string("vector_store_dir", "rag_data", "Directory to the vector store")
-flags.DEFINE_string("compiled_embedding_model", "bge-m3", "Directory to compiled HuggingFace embedding model")
+flags.DEFINE_string("compiled_embedding_model", "BGE-m3-ko", "Directory to compiled HuggingFace embedding model")
 flags.DEFINE_bool("debug", True, "Enable debug level logging")
 flags.DEFINE_bool("load_from_storage", False, "Load storage context from the storage")
 flags.DEFINE_integer("chunk_size", 1024, "Text chunk size")
