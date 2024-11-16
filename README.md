@@ -16,8 +16,8 @@
 -  추론서버 실행
 - ```bash 
     $ python3 -m vllm.entrypoints.openai.api_server \
-        --model rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096 \
-        --compiled-model-dir rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096 \
+        --model rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192 \
+        --compiled-model-dir rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192 \
         --dtype auto \
         --device rbln \
         --max-num-seqs 4 \
@@ -26,6 +26,8 @@
         --block-size 4096 \
         --api-key 1234 
     ``` 
+- ATOM개수 4개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096
+- ATOM개수 8개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192
 - `$ streamlit run ChatServer.py` streamlit 채팅 서버 실행
 - `$ uvicorn main:app --host 0.0.0.0 --port 9000 --reload` fastapi 서비스 서버 실행
 
