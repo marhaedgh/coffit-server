@@ -17,6 +17,7 @@ grpc_client_1.py
 marhaedgh_backend/rag_data/
 marhaedgh_backend/rbln-ko-Llama3-Bllossom-8B/
 marhaedgh_backend/rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096/
+marhaedgh_backend/rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192/
 rbln-ko-Llama3-Luxia-8B/
 vllm_backend/
 marhaedgh_backend/BGE-m3-ko
