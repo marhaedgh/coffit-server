@@ -21,10 +21,10 @@
         --dtype auto \
         --device rbln \
         --max-num-seqs 4 \
-        --max-num-batched-tokens 4096 \
-        --max-model-len 4096 \
-        --block-size 4096 \
-        --api-key 1234 
+        --max-num-batched-tokens 8192 \
+        --max-model-len 8192 \
+        --block-size 8192 \
+        --api-key 1234
     ``` 
 - ATOM개수 4개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096
 - ATOM개수 8개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192
