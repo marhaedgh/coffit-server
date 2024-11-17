@@ -23,13 +23,11 @@ CREATE TABLE `business_data` (
 
 CREATE TABLE `alerts` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `business_data_id` INT,
   `title` VARCHAR(255),
   `keywords` TEXT,
   `line_summarization` VARCHAR(255),
   `text_summarization` TEXT,
   `task_summarization` TEXT,
-  `detail_report` TEXT,
   `due_date` TIMESTAMP
 );
 
