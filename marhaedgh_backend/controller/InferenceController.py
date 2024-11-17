@@ -6,6 +6,7 @@ from service.InferenceService import InferenceService
 from service.AgentService import AgentService
 from dto.BaseResponse import BaseResponse
 from dto.InferRequest import InferRequest
+from dto.JsonInferRequest import JsonInferRequest
 from dto.DemonInferRequest import DemonInferRequest
 
 import ModelLoader
@@ -43,11 +44,20 @@ async def inferenceRequest(infer_request:InferRequest):
 
 #URL 넣으면 크롤링해서 alert 테이블 형태와 똑같이 반환
 @router.post("/demon", response_model=BaseResponse)
-async def inferenceRequest(demon_infer_request:DemonInferRequest):
+async def demonInferenceRequest(demon_infer_request:DemonInferRequest):
 
     demon_infer_response = await agentService.demon_alert_response_efficient(demon_infer_request.url)
 
     return BaseResponse(message="success - demon_inferenceRequest", data=demon_infer_response)
+
+
+#Json 넣으면 alert 테이블 형태와 똑같이 반환
+@router.post("/json", response_model=BaseResponse)
+async def jsonInferenceRequest(json_infer_request:JsonInferRequest):
+
+    json_infer_response = await agentService.json_alert_infer_request(json_infer_request.context)
+
+    return BaseResponse(message="success - json_infer_request", data=json_infer_response)
 
 
 @router.post("/chat")
