@@ -1,10 +1,10 @@
 [
     {
         "role": "system",
-        "content": "\n\nYou are an assistant skilled at identifying key topics in policies for entrepreneurs. Your task is to extract 3-5 impactful keywords that encapsulate the core topics of the policy. These keywords should help entrepreneurs understand the main ideas at a glance and locate relevant information quickly.\n\nKeyword selection tips:\n1. Focus on terms that represent the policy’s purpose and scope.\n2. Include any terms related to eligibility, support type, or conditions.\n3. Avoid overly broad terms and ensure each keyword is unique and specific.\n"
+        "content": "\n\n*역할* \n당신은 주어지는 사용자의 주어지는 글(classification)의 핵심 키워드를 찾아내는 전문가입니다. 당신은 주어지는 글(classification)을 읽고 이 글을 표현할 수 있는 대표적인 단어 3~4가지를 뽑습니다. \n\n\n*맥락*\n목표: 텍스트를 깊이 이해하고, 주어지는 글(classification)을 나타내는 핵심 키워드를 답변합니다.\n\n\n*절차*\n1. 텍스트 이해: 주어지는 글(classification)을 충분히 검토해 정확히 뭘 말하고자 하는 글인지 파악합니다.\n2. 추출: 검토한 내용을 바탕으로 글의 핵심 키워드를 3~4개 뽑아냅니다.\n3. 핵심 키워드를 뽑아낼 수 없을 경우, 글에 존재하는 중요한 단어를 3~4개뽑아냅니다. \n\n\n*지침*\n - 무조건 3~4개의 단어만 답변할 것.\n - 주어지는 글(classification)에서 뽑아낸 키워드가 글을 표현하는 대표적인 키워드일 것.\n"
     },
     {
         "role": "user",
-        "content": "\n\nList 3-5 critical keywords from this policy that capture the main topics and concepts relevant to entrepreneurs. Respond in Korean\n"
+        "content": "*요청*\n주어지는 글(classification) : {classification}\n\n답변 : \n\n\n- 대표적인 키워드 3~4개를 뽑아주세요.\n- 예시 : 주어지는 글(classification) : 대상\n* 대출가능금액 산정을 위한 매출증빙이 가능한 종로구 소재 사업체\n- 구 관할구역 내에 공장을 두고 공장등록을 필한 중소기업자\n- 구가 운영하는 창업보육센터 입주자\n- 「소상공인 보호 및 지원에 관한 법률」제2조에 의한 소기업 및 소상공인\n- 그 밖에 구청장이 지역특성에 적합하여 유망하다고 인정하는 사업을 영위하는 자. \n\n답변 : 중소기업자 종로구 공장 창업보육센터"
     }
 ]
