@@ -11,21 +11,6 @@ from dto.DemonInferRequest import DemonInferRequest
 
 import ModelLoader
 
-from llama_index.core import Settings
-from util.RBLNBGEM3Embeddings import RBLNBGEM3Embeddings
-from llama_index.llms.openai_like import OpenAILike
-
-
-Settings.embed_model = RBLNBGEM3Embeddings()
-Settings.llm = OpenAILike(
-    #model="rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096",
-    model="rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192",
-    api_base="http://0.0.0.0:8000/v1",
-    api_key="1234",
-    max_tokens=1024,
-    is_chat_model=True
-)
-
  
 inferenceService = InferenceService(ModelLoader.InferenceModel())
 agentService = AgentService(ModelLoader.InferenceModel())
