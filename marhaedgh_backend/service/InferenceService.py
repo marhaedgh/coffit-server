@@ -3,9 +3,6 @@ import json
 import requests
 from fastapi.responses import StreamingResponse
 
-from llama_index.core import Settings
-from llama_index.llms.openai_like import OpenAILike
-
 from dto.InferResponse import InferResponse
 
 class InferenceService:
@@ -17,9 +14,9 @@ class InferenceService:
        
         conversation = [{"role": role, "content": content}]
 
-        question = self.modelLoader.tokenizer.apply_chat_template(conversation, add_generation_prompt=True, tokenize=False)
+        question = self.modelLoader.tokenizer.apply_chat_template(conversation, add_generation_prompt=True, tokenize=True)
         
-        response = await Settings.llm.acomplete(question)
+        response = await self.modelLoader.llm_llama.acomplete(question)
 
         inferResponse = InferResponse(**{'result': str(response)})
 
@@ -28,7 +25,7 @@ class InferenceService:
     
     async def inference_chatting_streaming(self, question, prompt):
 
-        nodes = self.modelLoader.retriever.retrieve(question)
+        nodes = await self.modelLoader.retriever.aretrieve(question)
         #print(nodes)
 
         chat = self.modelLoader.tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False)
