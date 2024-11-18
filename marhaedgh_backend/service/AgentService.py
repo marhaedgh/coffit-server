@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from llama_index.core import Settings
 
+from dto.CreateBusinessResponse import CreateBusinessResponse
 from dto.JsonInferResponse import JsonInferResponse
 from db.database import get_db
 from repository.BusinessDataRepository import BusinessDataRepository
@@ -46,6 +47,74 @@ class AgentService:
 
         return self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
     
+
+    async def prepare_classification_request(self, user_business_data, alerts, json_path):
+        with open(json_path, 'r', encoding='utf-8') as file:
+            json_str = file.read()
+        
+        if "{business_data}" in json_str:
+            json_str = json_str.replace("{business_data}", str(user_business_data))
+        
+        results = []
+        for alert in alerts:
+            temp_json_str = json_str.replace("{context}", str(alert))
+            
+            json_data = json.loads(temp_json_str)
+            
+            result = self.modelLoader.tokenizer.apply_chat_template(
+                json_data,
+                add_generation_prompt=True,
+                tokenize=False
+            )
+            results.append(result)
+        
+        return results
+
+
+    async def initial_mapping_notifications(self, create_business_response:CreateBusinessResponse):
+        user_id = create_business_response.user_id
+        business_data_id = create_business_response.business_data_id
+
+        db: Session = next(get_db())
+
+        alert_repository = AlertRepository(db)
+        alerts = alert_repository.get_all()
+
+        business_repository = BusinessDataRepository(db)
+        user_business_data = business_repository.get_by_id(business_data_id)
+
+        layer0_classification_requests = await self.prepare_classification_request(user_business_data, alerts, "./prompt/classification.json")
+
+        semaphore = asyncio.Semaphore(4)
+        tasks = []
+        layer0_classifications = []
+
+        async def limited_acomplete(request):
+            async with semaphore:
+                return await Settings.llm.acomplete(request)
+
+        for request in layer0_classification_requests:
+            task = asyncio.create_task(limited_acomplete(request))
+            tasks.append(task)
+
+        if tasks:
+            results = await asyncio.gather(*tasks)
+            layer0_classifications += results
+
+        print(layer0_classifications)
+        user_alert_mapping_repository = UserAlertMappingRepository(db)
+        for i in range(len(layer0_classifications)):
+            response_text = layer0_classifications[i].text
+            print(response_text)
+            
+            if response_text > "0":
+                user_alert_mapping_repository.create({
+                    "user_id": user_id,
+                    "alert_id": alerts[i].id  
+                })
+                
+        return 0
+
 
     async def json_alert_infer_request(self, context):
         # 1. 준비 요청을 비동기로 병렬 수행하고 결과를 가져옴
