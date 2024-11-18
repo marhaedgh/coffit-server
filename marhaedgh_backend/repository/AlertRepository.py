@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models.Alert import Alert
+from typing import List
 
 class AlertRepository:
     def __init__(self, db: Session):
@@ -14,6 +15,9 @@ class AlertRepository:
 
     def get_by_id(self, alert_id: int) -> Alert:
         return self.db.query(Alert).filter(Alert.id == alert_id).first()
+
+    def get_all(self) -> List[Alert]:
+        return self.db.query(Alert).all()
 
     def update(self, alert_id: int, update_data: dict) -> Alert:
         alert = self.get_by_id(alert_id)
