@@ -1,13 +1,10 @@
 import json
 import asyncio
-from vllm import AsyncEngineArgs, AsyncLLMEngine, SamplingParams
-from langchain.text_splitter import CharacterTextSplitter
 from sqlalchemy.orm import Session
-
-from llama_index.core import Settings
 
 from dto.CreateBusinessResponse import CreateBusinessResponse
 from dto.JsonInferResponse import JsonInferResponse
+from dto.DemonInferResponse import DemonInferResponse
 from db.database import get_db
 from repository.BusinessDataRepository import BusinessDataRepository
 from repository.AlertRepository import AlertRepository
@@ -91,7 +88,7 @@ class AgentService:
 
         async def limited_acomplete(request):
             async with semaphore:
-                return await Settings.llm.acomplete(request)
+                return await self.modelLoader.llm_llama.acomplete(request)
 
         for request in layer0_classification_requests:
             task = asyncio.create_task(limited_acomplete(request))
@@ -127,14 +124,14 @@ class AgentService:
 
         # 2. acompletion 요청을 병렬로 수행하고 결과를 가져옴
         layer0_title, layer0_keywords, layer0_summarization, layer0_whattodo = await asyncio.gather(
-            Settings.llm.acomplete(layer0_title_request),
-            Settings.llm.acomplete(layer0_keywords_request),
-            Settings.llm.acomplete(layer0_summarization_request),
-            Settings.llm.acomplete(layer0_whattodo_request)
+            self.modelLoader.llm_llama.acomplete(layer0_title_request),
+            self.modelLoader.llm_llama.acomplete(layer0_keywords_request),
+            self.modelLoader.llm_llama.acomplete(layer0_summarization_request),
+            self.modelLoader.llm_llama.acomplete(layer0_whattodo_request)
         )
 
         layer1_line_summarization_request = await self.prepare_json_infer_request(context, "./prompt/line_summarization.json")
-        layer1_line_summarization = await Settings.llm.acomplete(layer1_line_summarization_request)
+        layer1_line_summarization = await self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request)
 
         """
         #layer 추가시 아래와 같은 형식으로 추가하기. 하나일 경우 그냥 await
@@ -143,7 +140,7 @@ class AgentService:
         )
 
         layer1_line_summarization = await asyncio.gather( 
-            Settings.llm.acomplete(layer1_line_summarization_request),
+            self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request),
         )
         """
 
@@ -204,15 +201,15 @@ class AgentService:
         # 2. acompletion 요청을 병렬로 수행하고 결과를 가져옴
         layer0_title, layer0_keywords, layer0_summarization, \
         layer0_classification, layer0_whattodo = await asyncio.gather(
-            Settings.llm.acomplete(layer0_title_request),
-            Settings.llm.acomplete(layer0_keywords_request),
-            Settings.llm.acomplete(layer0_summarization_request),
-            Settings.llm.acomplete(layer0_classification_request),
-            Settings.llm.acomplete(layer0_whattodo_request)
+            self.modelLoader.llm_llama.acomplete(layer0_title_request),
+            self.modelLoader.llm_llama.acomplete(layer0_keywords_request),
+            self.modelLoader.llm_llama.acomplete(layer0_summarization_request),
+            self.modelLoader.llm_llama.acomplete(layer0_classification_request),
+            self.modelLoader.llm_llama.acomplete(layer0_whattodo_request)
         )
 
         layer1_line_summarization_request = await self.prepare_request(content, "./prompt/line_summarization.json")
-        layer1_line_summarization = await Settings.llm.acomplete(layer1_line_summarization_request)
+        layer1_line_summarization = await self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request)
 
         """
         #layer 추가시 아래와 같은 형식으로 추가하기. 하나일 경우 그냥 await
@@ -221,7 +218,7 @@ class AgentService:
         )
 
         layer1_line_summarization = await asyncio.gather( 
-            Settings.llm.acomplete(layer1_line_summarization_request),
+            self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request),
         )
         """
 
