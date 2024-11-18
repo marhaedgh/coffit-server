@@ -5,8 +5,8 @@ import os
 model_id = "MLP-KTLim/llama-3-Korean-Bllossom-8B"
 
 tensor_parallel_size = 8
-batch_size = 4
-max_seq_len = 8192
+batch_size = 8
+max_seq_len = 4096
 
 model_save_dir = (
     f"rbln_vllm_{os.path.basename(model_id)}"
