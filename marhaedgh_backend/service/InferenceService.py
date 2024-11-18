@@ -24,11 +24,12 @@ class InferenceService:
         inferResponse = InferResponse(**{'result': str(response)})
 
         return inferResponse
-
-
+    
+    
     async def inference_chatting_streaming(self, question, prompt):
 
         nodes = self.modelLoader.retriever.retrieve(question)
+        #print(nodes)
 
         chat = self.modelLoader.tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False)
 
@@ -40,7 +41,7 @@ class InferenceService:
         
         def generator():
             for text in streaming_response.response_gen:
-                print(text)
+                #print(text)
                 yield text
 
         return generator()
