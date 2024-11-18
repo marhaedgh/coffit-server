@@ -10,7 +10,6 @@ marhaedgh_backend/service/__pycache__/
 marhaedgh_backend/.venv/
 
 # Untracked 파일 및 디렉터리 무시
-Meta-Llama-3-8B-Instruct/
 docker/
 dockerfile(triton)
 grpc_client_1.py
@@ -20,13 +19,6 @@ marhaedgh_backend/rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096/
 marhaedgh_backend/rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192/
 marhaedgh_backend/rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch8_max4096/
 marhaedgh_backend/rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096/
-rbln-ko-Llama3-Luxia-8B/
 vllm_backend/
-marhaedgh_backend/BGE-m3-ko
-marhaedgh_backend/BGE-m3-ko/config.json
-marhaedgh_backend/BGE-m3-ko/compiled_model.rbln
-marhaedgh_backend/BGE-m3-ko/rbln_config.json
-marhaedgh_backend/BGE-m3-ko/sentencepiece.bpe.model
-marhaedgh_backend/BGE-m3-ko/special_tokens_map.json
-marhaedgh_backend/BGE-m3-ko/tokenizer_config.json
-marhaedgh_backend/BGE-m3-ko/tokenizer.json
+marhaedgh_backend/BGE-m3-ko/
+marhaedgh_backend/bge-reranker-v2-m3-ko/
