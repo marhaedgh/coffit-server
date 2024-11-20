@@ -31,7 +31,11 @@ class InferenceModel:
                 max_tokens=4096,
                 temperature=0.6
             )
-            #self.llm_prometheus = OpenAILike(model="rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096", api_base="http://0.0.0.0:8001/v1", api_key="5678")
+            self.llm_prometheus = OpenAILike(
+                model="rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096",
+                api_base="http://0.0.0.0:8001/v1",
+                api_key="5678"
+            )
 
             self.embed_model = RBLNBGEM3Embeddings(rbln_compiled_model_name="BGE-m3-ko")
             self.embed_reranker_model = RBLNBGEM3Embeddings(rbln_compiled_model_name="bge-reranker-v2-m3-ko")
