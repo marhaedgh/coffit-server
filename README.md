@@ -24,13 +24,29 @@
         --max-num-batched-tokens 8192 \
         --max-model-len 8192 \
         --block-size 8192 \
-        --api-key 1234
+        --api-key 1234 \
+        --port 8000
     ``` 
 - ATOM개수 4개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu4_batch4_max4096
 - ATOM개수 8개 일 경우 : rbln_vllm_llama-3-Korean-Bllossom-8B_npu8_batch4_max8192
 - `$ streamlit run ChatServer.py` streamlit 채팅 서버 실행
 - `$ uvicorn main:app --host 0.0.0.0 --port 9000 --reload` fastapi 서비스 서버 실행
+-  Prometheus2 평가 추론 서버 실행
+-  ```bash 
+    $ python3 -m vllm.entrypoints.openai.api_server \
+        --model rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096 \
+        --compiled-model-dir rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096 \
+        --dtype auto \
+        --device rbln \
+        --max-num-seqs 2 \
+        --max-num-batched-tokens 4096 \
+        --max-model-len 4096 \
+        --block-size 4096 \
+        --api-key 5678 \
+        --port 8001
+    ``` 
 
+- `$ python3 EvalPrometheus.py` 프로메테우스 평가 실행
 - POSTMAN으로 결과 확인 가능
 
 
@@ -56,4 +72,5 @@
 <br/>
 
 ### 모델 성능 개발 전략
-- 
+- evaluate_code/rbln_summary.py 을 실행시켜 현재 프롬프트드의 성능을 평가 및 기록하고, 피드백을 통해 프롬프트를 개선합니다.
+- 서비스시 사용자에게 output을 제공하기 전에 Prometheus2를 통해 평가점수에 미달할 경우 재 생성해서 신뢰도를 유지합니다.
