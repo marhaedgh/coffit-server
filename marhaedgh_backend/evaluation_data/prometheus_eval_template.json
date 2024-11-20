@@ -1,0 +1,74 @@
+{
+    "keywords": {
+      "rubric_data": {
+        "criteria": "Does the model accurately extract the most relevant and representative keywords from the text, ensuring no more than 4 keywords are selected and only words that effectively represent the text are included?",
+            "score1_description": "The model fails to identify any relevant keywords, provides unrelated or inaccurate results, or exceeds the 4-keyword limit.",
+            "score2_description": "The model extracts some relevant keywords but misses several important ones, includes irrelevant terms, or exceeds the 4-keyword limit.",
+            "score3_description": "The model identifies most of the relevant keywords but occasionally includes irrelevant terms, redundant words, or slightly exceeds the 4-keyword limit.",
+            "score4_description": "The model consistently extracts relevant and representative keywords with minimal redundancy or omissions, adhering to the 4-keyword limit in most cases.",
+            "score5_description": "The model excels at identifying all critical keywords, providing a complete and concise representation of the text, and strictly adheres to the 4-keyword limit."
+        }
+    },
+    "text_summary": {
+        "rubric_data": {
+            "criteria": "Does the model provide a clear, concise, and well-structured summary that captures the key points relevant to small business owners and includes actionable guidance for understanding and applying the policy?",
+            "score1_description": "The summary is unclear, omits key points relevant to small business owners, or lacks structure and actionable guidance.",
+            "score2_description": "The summary captures some relevant points but is incomplete, difficult to follow, or lacks sufficient detail and guidance for application.",
+            "score3_description": "The summary captures most relevant points and provides some structure and actionable steps but may miss minor details or lack clarity in specific areas.",
+            "score4_description": "The summary is clear, concise, and well-structured, capturing almost all key points relevant to small business owners with minimal oversights. It provides actionable guidance and is easy to follow.",
+            "score5_description": "The summary is highly clear, concise, and perfectly structured, capturing all key points relevant to small business owners. It provides actionable guidance, necessary background information, and a clear path for applying the policy."
+        }
+    },
+    "line_summary": {
+        "rubric_data": {
+            "criteria": "Does the model create a clear, concise, and accurate one-line summary that captures the essence of the text without exceeding 30 characters?",
+            "score1_description": "The one-line summary is unclear, verbose, or significantly exceeds the 30-character limit. It fails to capture the main idea of the text.",
+            "score2_description": "The one-line summary captures part of the essence but is incomplete, overly verbose, or slightly exceeds the 30-character limit.",
+            "score3_description": "The one-line summary captures the essence of the text but could be more concise or precise. It adheres to the 30-character limit with minor issues.",
+            "score4_description": "The one-line summary is clear, concise, and effectively captures the essence of the text. It adheres to the 30-character limit with minimal oversights.",
+            "score5_description": "The one-line summary is perfectly concise, highly accurate, and encapsulates the core idea of the text within the 30-character limit."
+        }
+    },
+    "title": {
+        "rubric_data": {
+            "criteria": "Does the model generate a title that is relevant, compelling, and effectively summarizes the main topic of the text while adhering to the 25-character limit?",
+            "score1_description": "The title is irrelevant, unclear, overly verbose, or significantly exceeds the 25-character limit. It fails to reflect the main topic or attract the reader's interest.",
+            "score2_description": "The title captures part of the main topic but is overly generic, lacks appeal, or slightly exceeds the 25-character limit.",
+            "score3_description": "The title is relevant and descriptive, adhering to the 25-character limit but could be more engaging or precise in attracting the reader's attention.",
+            "score4_description": "The title is relevant, compelling, and effectively summarizes the main topic while adhering to the 25-character limit, with minor room for improvement.",
+            "score5_description": "The title is highly relevant, engaging, perfectly encapsulates the main topic, and adheres strictly to the 25-character limit. It effectively attracts the reader's interest."
+        }
+    },
+    "whattodo": {
+        "rubric_data": {
+            "criteria": "Does the model identify the relevant conditions in the policy or program context and provide clear, actionable steps for meeting the eligibility requirements?",
+            "score1_description": "The response fails to identify relevant conditions or provides unclear, irrelevant, or incomplete steps for meeting the eligibility requirements.",
+            "score2_description": "The response identifies some relevant conditions but is incomplete, vague, or lacks actionable clarity in addressing the eligibility requirements.",
+            "score3_description": "The response identifies most relevant conditions and provides mostly actionable steps, but it may miss key details or lack precision in addressing the eligibility requirements.",
+            "score4_description": "The response identifies all relevant conditions and provides clear, actionable steps for meeting the eligibility requirements, with minor room for improvement in clarity or detail.",
+            "score5_description": "The response accurately identifies all relevant conditions and provides highly clear, precise, and actionable steps that fully address the eligibility requirements with no significant omissions."
+        }
+    },
+    "chatting": {
+        "rubric_data": {
+            "criteria": "Does the model provide a natural, contextually appropriate, and accurate answer based on the given context and conversation history, while clearly indicating if the answer is unavailable?",
+            "score1_description": "The response is irrelevant, unclear, or fails to align with the context or conversation history. If the answer is unavailable, the response fails to indicate this clearly.",
+            "score2_description": "The response occasionally aligns with the context and conversation history but is often awkward, off-topic, or incomplete. It may also fail to clearly indicate when the answer is unavailable.",
+            "score3_description": "The response is mostly natural, contextually appropriate, and accurate but may have minor lapses in tone, relevance, or clarity. It generally handles unavailable answers appropriately but with room for improvement.",
+            "score4_description": "The response is natural, contextually appropriate, and accurate, effectively utilizing the context and conversation history. It handles unavailable answers appropriately with minimal room for improvement.",
+            "score5_description": "The response is highly natural, contextually appropriate, and accurate, fully utilizing the context and conversation history. It clearly and confidently indicates when the answer is unavailable, maintaining a friendly and professional tone."
+        }
+    },
+    "classification": {
+        "rubric_data": {
+            "criteria": "Does the model accurately evaluate the user's eligibility for the benefits or regulations described in the given context based on the provided business information?",
+            "score1_description": "The evaluation is incorrect or fails to follow the specified procedure. The response does not align with the conditions outlined in the context or user information.",
+            "score2_description": "The evaluation partially aligns with the specified procedure but contains errors or lacks clarity in determining eligibility. It may misinterpret key conditions in the context or business information.",
+            "score3_description": "The evaluation mostly follows the specified procedure and correctly identifies eligibility in most cases, but it may miss minor details or conditions.",
+            "score4_description": "The evaluation is clear, accurate, and effectively follows the specified procedure, correctly determining eligibility with minimal errors or omissions.",
+            "score5_description": "The evaluation is highly accurate and thorough, strictly following the specified procedure. It correctly interprets all conditions in the context and user business information, providing a precise and reliable assessment."
+        }
+    }
+    
+  }
+  
