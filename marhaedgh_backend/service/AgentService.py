@@ -130,24 +130,34 @@ class AgentService:
             self.modelLoader.llm_llama.acomplete(layer0_whattodo_request)
         )
 
-        layer1_line_summarization_request = await self.prepare_json_infer_request(context, "./prompt/line_summarization.json")
-        layer1_line_summarization = await self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request)
+        #layer1_line_summarization_request = await self.prepare_json_infer_request(context, "./prompt/line_summarization.json")
+        #layer1_line_summarization = await self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request)
+
+        layer1_line_summarization_request, layer1_convert_to_chatting_request = await asyncio.gather(
+            self.prepare_json_infer_request(context, "./prompt/line_summarization.json"),
+            self.prepare_json_infer_request(context, "./prompt/convert_to_chatting.json")
+        )
+        layer1_line_summarization, layer1_convert_to_chatting = await asyncio.gather(
+            self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request),
+            self.modelLoader.llm_llama.acomplete(layer1_convert_to_chatting_request)
+        )
 
         """
         #layer 추가시 아래와 같은 형식으로 추가하기. 하나일 경우 그냥 await
-        layer1_line_summarization_request = await asyncio.gather(
+        layer2_line_summarization_request = await asyncio.gather(
             self.prepare_json_infer_request(context, "./prompt/line_summarization.json"),
         )
 
-        layer1_line_summarization = await asyncio.gather( 
-            self.modelLoader.llm_llama.acomplete(layer1_line_summarization_request),
+        layer2_line_summarization = await asyncio.gather( 
+            self.modelLoader.llm_llama.acomplete(layer2_line_summarization_request),
         )
         """
 
         title = str(layer0_title)
         keyword = str(layer0_keywords)
         line_summarization = str(layer1_line_summarization)
-        summarization = str(layer0_summarization)
+        #summarization = str(layer0_summarization)
+        summarization = str(layer1_convert_to_chatting) #채팅 형식으로 된거 요약에 저장, 사용자에게 제공
         whattodo = str(layer0_whattodo)
 
 
