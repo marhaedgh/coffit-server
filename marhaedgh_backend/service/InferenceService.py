@@ -10,6 +10,7 @@ class InferenceService:
     def __init__(self, modelLoader):
         self.modelLoader = modelLoader
 
+
     async def sendInferenceRequest_vLLM(self, role, content):
        
         conversation = [{"role": role, "content": content}]
@@ -26,19 +27,25 @@ class InferenceService:
     async def inference_chatting_streaming(self, question, prompt):
 
         nodes = await self.modelLoader.retriever.aretrieve(question)
-        #print(nodes)
+
+        def get_highest_score_text(nodes):
+
+            if not nodes:
+                return None
+
+            highest_score_node = max(nodes, key=lambda node: node.score)
+            
+            return highest_score_node.node.text if hasattr(highest_score_node.node, 'text') else None
+        
+        final_node = get_highest_score_text(nodes)
 
         chat = self.modelLoader.tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False)
 
-        # Generate streaming response
-        streaming_response = self.modelLoader.query_engine.synthesize(
-            chat,
-            nodes=nodes
-        )
-        
-        def generator():
-            for text in streaming_response.response_gen:
-                #print(text)
-                yield text
+        chat_with_nodes = chat.replace("{nodes}", str(final_node))
 
-        return generator()
+        print(chat_with_nodes)
+       
+        response = await self.modelLoader.llm_llama.astream_complete(chat_with_nodes)
+
+        async for data in response:
+            yield data.delta

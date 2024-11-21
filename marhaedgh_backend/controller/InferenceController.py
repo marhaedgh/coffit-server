@@ -52,4 +52,4 @@ async def inference_chatting_request(infer_request: Request):
     prompt = data["prompt"]
     
     # 스트리밍 방식으로 응답 전송
-    return StreamingResponse(await inferenceService.inference_chatting_streaming(question, prompt), media_type="text/event-stream")
+    return StreamingResponse(inferenceService.inference_chatting_streaming(question, prompt), media_type="text/event-stream")
