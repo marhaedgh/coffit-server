@@ -30,13 +30,14 @@ class NotificationService:
         )
 
 
-    def get_notifications(self, get_notifications_request: GetNotificationsRequest) -> List[GetNotificationsResponse]:
+    def get_notifications(self, user_id: int) -> List[GetNotificationsResponse]:
         # user, alert mapping repo 이용한 api
         db: Session = next(get_db())
 
         notification_repository = NotificationRepository(db)
+
         alerts = notification_repository.get_notifications_by_user_id(
-            get_notifications_request.user_id
+            user_id
         )
 
         response_list = []
@@ -49,7 +50,7 @@ class NotificationService:
                 line_summary=alert.line_summarization,
                 keywords=alert.keywords.split(",") if alert.keywords else [], # keywords가 None일 경우 빈 리스트 반환 
                 date=alert.due_date.strftime("%Y-%m-%d") if alert.due_date else "",  # 날짜 포맷 지정
-                is_read=notification_repository.get_is_read_by_ids(get_notifications_request.user_id, alert.id)
+                is_read=notification_repository.get_is_read_by_ids(user_id, alert.id)
             )
             response_list.append(response)
             
