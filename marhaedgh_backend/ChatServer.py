@@ -18,6 +18,8 @@ def load_basic_prompt():
 def add_to_message_history(role, content):
     st.session_state["messages"].append({"role": role, "content": content})
 
+st.set_page_config(layout="wide")
+
 # 메시지 초기화
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
