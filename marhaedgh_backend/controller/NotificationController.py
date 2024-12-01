@@ -21,14 +21,14 @@ notificationService = NotificationService()
 
 @router.get("/", response_model=BaseResponse)
 async def get_notifications(
-        get_notifications_request: GetNotificationsRequest
+    user_id: int
 ):
 
-    logger.info(f"Request Data (Get Notifications): {get_notifications_request.model_dump()}")
+    #logger.info(f"Request Data (Get Notifications): {get_notifications_request.model_dump()}")
 
-    notifications = notificationService.get_notifications(get_notifications_request)
+    notifications = notificationService.get_notifications(user_id)
     
-    logger.info(f"Response Data (Get Notifications): {notifications}")
+    #logger.info(f"Response Data (Get Notifications): {notifications}")
 
     return BaseResponse(message="success about calling get notifications", data=notifications)
 
