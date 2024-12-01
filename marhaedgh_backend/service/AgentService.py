@@ -29,7 +29,7 @@ class AgentService:
         if "{context}" in json_str:
             context_str = json.dumps(context, ensure_ascii=False).replace('"', '\\"')
             json_str = json_str.replace("{context}", context_str)
-
+            
         json_data = json.loads(json_str)
 
         return self.modelLoader.tokenizer.apply_chat_template(json_data, add_generation_prompt=True, tokenize=False)
@@ -253,6 +253,7 @@ class AgentService:
             "line_summarization": line_summarization,
             "text_summarization": summarization,
             "task_summarization": whattodo
+            #"due_date":
         })
 
         user_alert_mapping_repository = UserAlertMappingRepository(db)
