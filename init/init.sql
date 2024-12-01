@@ -5,7 +5,7 @@ USE malhaedgh_db;
 CREATE TABLE `users` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `business_data_id` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `business_data` (
@@ -28,7 +28,7 @@ CREATE TABLE `alerts` (
   `line_summarization` VARCHAR(255),
   `text_summarization` TEXT,
   `task_summarization` TEXT,
-  `due_date` TIMESTAMP
+  `due_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `user_alert_mapping` (
