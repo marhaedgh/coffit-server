@@ -3,6 +3,8 @@ import json
 import requests
 from fastapi.responses import StreamingResponse
 
+from llama_index.core import QueryBundle
+
 from dto.InferResponse import InferResponse
 
 class InferenceService:
@@ -26,8 +28,6 @@ class InferenceService:
     
     async def inference_chatting_streaming(self, question, prompt):
 
-        nodes = await self.modelLoader.retriever.aretrieve(question)
-
         def get_highest_score_text(nodes):
 
             if not nodes:
@@ -36,8 +36,18 @@ class InferenceService:
             highest_score_node = max(nodes, key=lambda node: node.score)
             
             return highest_score_node.node.text if hasattr(highest_score_node.node, 'text') else None
-        
-        final_node = get_highest_score_text(nodes)
+
+        nodes = await self.modelLoader.retriever.aretrieve(question)
+
+        query_bundle = QueryBundle(query_str=question)
+        #ranked_nodes = self.retriever_rerank._postprocess_nodes(nodes, query_bundle = query_bundle)
+
+        #final_node = get_highest_score_text(ranked_nodes)
+        reranked_nodes = self.modelLoader.reranker.postprocess_nodes(
+            nodes, query_bundle
+        )
+
+        final_node = get_highest_score_text(reranked_nodes)
 
         chat = self.modelLoader.tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False)
 
