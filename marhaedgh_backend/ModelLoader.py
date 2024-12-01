@@ -31,14 +31,16 @@ class InferenceModel:
                 max_tokens=4096,
                 temperature=0.6
             )
+            """
             self.llm_prometheus = OpenAILike(
                 model="rbln_vllm_prometheus-7b-v2.0_npu2_batch2_max4096",
                 api_base="http://0.0.0.0:8001/v1",
                 api_key="5678"
             )
+            """
 
             self.embed_model = RBLNBGEM3Embeddings(rbln_compiled_model_name="BGE-m3-ko")
-            self.embed_reranker_model = RBLNBGEM3Embeddings(rbln_compiled_model_name="bge-reranker-v2-m3-ko")
+            #self.embed_reranker_model = RBLNBGEM3Embeddings(rbln_compiled_model_name="bge-reranker-v2-m3-ko")
 
             #토크나이저 초기화
             self.tokenizer = AutoTokenizer.from_pretrained("MLP-KTLim/llama-3-Korean-Bllossom-8B")
@@ -50,14 +52,21 @@ class InferenceModel:
                 persist_dir="./rag_data"
             )
             self.index = load_index_from_storage(self.storage_context, embed_model=self.embed_model)
-            self.index_rerank = load_index_from_storage(self.storage_context, embed_model=self.embed_reranker_model)
+            #self.index_rerank = load_index_from_storage(self.storage_context, embed_model=self.embed_reranker_model)
 
             # Retriever 및 Query Engine 설정
-            self.retriever = VectorIndexRetriever(embed_model=self.embed_model, index=self.index, similarity_top_k=2)
-            self.retriever_rerank = VectorIndexRetriever(embed_model=self.embed_reranker_model, index=self.index_rerank, similarity_top_k=2)
+            self.retriever = VectorIndexRetriever(
+                embed_model=self.embed_model,
+                index=self.index,
+                similarity_top_k=3
+            )
 
             self.response_synthesizer = get_response_synthesizer(llm=self.llm_llama, streaming=True, use_async=True)
-            self.reranker = LLMRerank(choice_batch_size=5, top_n=3, llm=self.llm_llama)
+            self.reranker = LLMRerank(
+                choice_batch_size=3,
+                top_n=3, 
+                llm=self.llm_llama
+            )
             self.query_engine = RetrieverQueryEngine(
                 retriever=self.retriever,
                 response_synthesizer=self.response_synthesizer,
