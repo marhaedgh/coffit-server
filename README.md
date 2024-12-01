@@ -73,11 +73,11 @@
 
 ## 설계 문서
 ### Current Server Architecture
-<img width="670" alt="image" src="https://github.com/user-attachments/assets/4a4eb525-e87c-476c-b04e-ccaa1be58b63">
+<img width="670" alt="image" src="https://github.com/user-attachments/assets/bce8e52d-f45d-4f30-8462-9ccb70f4cb73">
 
 
 ### ERD
-<image width=500 src="https://github.com/user-attachments/assets/ac46ee20-d122-4942-b3c8-5cc3d70717c5">
+<image width=500 src="https://github.com/user-attachments/assets/8ffa1500-4739-4743-aee5-ca65f2706f9e">
 
 <br/>
 <br/>
